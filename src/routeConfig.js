@@ -4,7 +4,7 @@ export default[
   {
     //电影列表详情
     name:'MovieList',
-    path:'/:category/:pageNum',
+    path:'/:category/:page',
     component:MovieList
   },
   {
