@@ -4,11 +4,11 @@ export default[
   {
     //电影列表详情
     name:'MovieList',
-    path:'/:a',
+    path:'/:category/:pageNum',
     component:MovieList
   },
-  // {
-  //   path: '/',
-  //   redirect: '/in_theaters'
-  // }
+  {
+    path: '/',
+    redirect: '/in_theaters/1'
+  }
 ]
