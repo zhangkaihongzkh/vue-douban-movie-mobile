@@ -8,24 +8,24 @@
     </router-view>
     <!-- 底部 -->
     <mt-tabbar  fixed >
-      <mt-tab-item id="in_theaters" v-bind:class="bottomBtn" >
-        <img slot="icon" src="./assets/images/feature1.png" height="82" width="82" >
-        <router-link to="/in_theaters/1">
+      <mt-tab-item id="in_theaters"  >
 
-        正在热映
+        <router-link to="/in_theaters/1">
+        <mt-button type="primary" v-bind:class="['is-plain']">正在热映</mt-button>
+
         </router-link>
       </mt-tab-item>
-      <mt-tab-item id="coming_soon"  v-bind:class="bottomBtn">
-        <img slot="icon" src="./assets/images/feature2.png">
+      <mt-tab-item id="coming_soon" >
+
         <router-link to="/coming_soon/1">
-          即将上映
+          <mt-button type="primary" v-bind:class="['is-plain']">即将上映</mt-button>
           </router-link>
       </mt-tab-item>
-      <mt-tab-item id="top250"  v-bind:class="bottomBtn">
-        <img slot="icon" src="./assets/images/feature3.png">
-        <router-link to="/top250/1">
+      <mt-tab-item id="top250"  >
 
-        top250
+        <router-link to="/top250/1">
+          <mt-button type="primary" v-bind:class="['is-plain']">top250</mt-button>
+
         </router-link>
       </mt-tab-item>
     </mt-tabbar>

@@ -186,7 +186,7 @@ export default {
 }
 /*内容区域*/
 .listContent{
-  padding:0.5rem 0 0.5rem 0;
+  padding:3rem 0 0.5rem 0;
 }
 .linkBtn{
   text-decoration: none;
