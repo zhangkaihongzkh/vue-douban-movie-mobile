@@ -1,4 +1,5 @@
 import MovieList from './components/MovieList.vue'
+import MovieDetail from './components/MovieDetail.vue'
 
 export default[
   {
@@ -10,5 +11,14 @@ export default[
   {
     path: '/',
     redirect: '/in_theaters/1'
-  }
+  },
+  {
+    path:'/detail/detail/:id',
+    component:MovieDetail
+  },
+  {
+    path:'/search',
+    component:MovieList
+  },
+
 ]

@@ -1,22 +1,28 @@
 <template>
-  <div>
-
-
-    <div v-bind:class="['listTitle']">{{title}}</div>
-    <div v-bind:class="['contentList','clearfix']" v-for="item in subjects">
-      <div v-bind:class="['itemLeft']">
-        <img :src="item.images.medium"  alt="">
-      </div>
-      <div v-bind:class="['itemRight']">
-        <div v-bind:class="['itemBox']">
-          <p v-bind:class="['itemTitle']">{{item.title}}<mt-badge type="primary" size="small" v-bind:class="['mark']">{{item.rating.average}}</mt-badge></p>
-          <p v-bind:class="['itemText']">原名：<span v-bind:class="['itemTextInfo']">{{item.original_title}} </span></p>
-          <p v-bind:class="['itemText']">年代：<span v-bind:class="['itemTextInfo']">{{item.year}} </span></p>
-          <p v-bind:class="['itemText']">导演：<span v-bind:class="['itemTextInfo']" v-for="people in item.directors">{{people.name}} </span></p>
-          <p v-bind:class="['itemText']">类型：<span v-bind:class="['itemTextInfo']">{{item.genres.join('、 ')}}</span></p>
-          <p v-bind:class="['itemText']">演员：<span v-bind:class="['itemTextInfo']" v-for="people in item.casts">{{people.name}}、 </span></p>
+  <div v-bind:class="['listContent']">
+    <div v-bind:class="['searchArea']">
+        <!-- 搜索功能 -->
+         <form @submit.prevent="search" >
+          <input type="text" name="" placeholder="Search..." v-bind:class="['searchInput']" v-model="searchInput">
+        </form>
+    </div>
+    <div v-bind:class="['listTitle']" >{{title}} </div>
+    <div  v-bind:class="['contentList','clearfix']" v-for="item in subjects">
+      <a :href="'#/detail/detail/'+item.id" v-bind:class="['linkBtn']">
+        <div v-bind:class="['itemLeft']">
+          <img :src="item.images.medium"  alt="">
         </div>
-      </div>
+        <div v-bind:class="['itemRight']">
+          <div v-bind:class="['itemBox']">
+            <p v-bind:class="['itemTitle']">{{item.title}}<mt-badge type="primary" size="small" v-bind:class="['mark']">{{item.rating.average}}</mt-badge></p>
+            <p v-bind:class="['itemText']">原名：<span v-bind:class="['itemTextInfo']">{{item.original_title}} </span></p>
+            <p v-bind:class="['itemText']">年代：<span v-bind:class="['itemTextInfo']">{{item.year}} </span></p>
+            <p v-bind:class="['itemText']">导演：<span v-bind:class="['itemTextInfo']" v-for="people in item.directors">{{people.name}} </span></p>
+            <p v-bind:class="['itemText']">类型：<span v-bind:class="['itemTextInfo']">{{item.genres.join('、 ')}}</span></p>
+            <p v-bind:class="['itemText']">演员：<span v-bind:class="['itemTextInfo']" v-for="people in item.casts">{{people.name}}、 </span></p>
+          </div>
+        </div>
+      </a>
     </div>
 
 
@@ -54,7 +60,7 @@ export default {
     //     window.scrollTo(0, 0)
     // });
     //页面置顶
-    this.menu();
+    // this.menu();
   },
   //监听路由变化
   watch:{
@@ -72,7 +78,8 @@ export default {
       currentPage:0, //当前的页数
       count:9,      //默认请求的页数
       page:0,//当前的页面数
-      start:0
+      start:0,
+      searchInput:'' ,  //搜索输入的内容
     }
   },
   methods:{
@@ -84,28 +91,31 @@ export default {
       var page = parseInt(this.$route.params.page);
       var start = (page - 1) * this.count;
       var count = this.count;
-      this.$http.jsonp('https://api.douban.com/v2/movie/'+currentCategory,{
-        params:{
-          start:start,
-          count:count,
-          city:'广州',
-        }
-      }).then(function(res){
+      var reqURL = ''
+      reqURL = 'https://api.douban.com/v2/movie/'+currentCategory;
+         this.$http.jsonp(reqURL,{
+          params:{
+            start:start,
+            count:count,
+            city:'广州',
+          }
+        }).then(function(res){
 
-        //console.log( res.data);
-        _this.type = _this.$route.params.category; //修改当前所处的类型 in_threats  ..
-        //console.log(_this.type);
-        _this.subjects = res.data.subjects;//获取到的列表数
-        _this.title = res.data.title;     //标题
-        _this.totalNum = res.data.total  //请求到的个数、
-        _this.totalPage = Math.ceil(_this.totalNum/_this.count);
-         _this.page = parseInt(_this.$route.params.page);
-         _this.currentPage = _this.page;
-        console.log(_this.currentPage );
-        _this.loading = false;
-        //console.log(_this.totalNum);
-        //console.log(_this.totalPage);
-      });
+          //console.log( res.data);
+          _this.type = _this.$route.params.category; //修改当前所处的类型 in_threats  ..
+          //console.log(_this.type);
+          _this.subjects = res.data.subjects;//获取到的列表数
+          _this.title = res.data.title;     //标题
+          _this.totalNum = res.data.total  //请求到的个数、
+          _this.totalPage = Math.ceil(_this.totalNum/_this.count);
+           _this.page = parseInt(_this.$route.params.page);
+           _this.currentPage = _this.page;
+          console.log(_this.currentPage );
+          _this.loading = false;
+          //console.log(_this.totalNum);
+          //console.log(_this.totalPage);
+        });
+
        _this.loading = true;
     },
     //页面跳转
@@ -142,6 +152,19 @@ export default {
     menu() {
       window.scrollTo(0,0);
     },
+    //搜索功能
+    search(){
+      var _this = this;
+      //alert(_this.searchInput);
+      // 获取到表单输入内容
+
+      var tmpUrl = '/search?q='+this.searchInput;
+      //重置内容
+      console.log(tmpUrl);
+      this.searchInput = '';
+      //console.log(tmpUrl)
+      _this.$router.go({path:tmpUrl});
+    }
   },
 
 
@@ -149,7 +172,32 @@ export default {
 </script>
 
 <style scoped>
+/*搜索按钮*/
+.searchArea{
+  padding-top: 2.5rem;
+}
+.searchInput{
+  width: 94.5%;
+  margin: 0 auto;
+  padding: 0.5rem;
+
+  border:0.06rem solid #26a2ff;
+}
+/*内容区域*/
+.listContent{
+  padding:0.5rem 0 0.5rem 0;
+}
+.linkBtn{
+  text-decoration: none;
+  display: inline-block;
+  width: 100%;
+}
 .contentList{
+  display: inline-block;
+  text-decoration: none;
+}
+.contentList{
+  width: 95%;
   padding: 0.5rem 0.6rem;
   border-bottom: 0.06rem solid #aaa;
 
@@ -158,7 +206,6 @@ export default {
 .listTitle{
   padding-left: 0.6rem;
   padding-bottom: 0.6rem;
-  margin-top: 3rem;
   font-size: 1.5rem;
   border-bottom: 0.06rem solid #aaa;
 }
@@ -189,6 +236,7 @@ export default {
 .itemTitle{
   font-size: 1.2rem;
   margin: 0.5rem 0;
+  color: #111;
 }
 .mark{
   float: right;
@@ -199,10 +247,11 @@ export default {
 }
 .itemText{
   font-size: 0.8rem;
-  color: #aaa;
+  color: #111;
   margin: 0.5rem 0;
   /*word-break: break-all; word-wrap:break-word;*/
    display: -webkit-box;
+   font-weight: bold;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -212,6 +261,7 @@ export default {
 .itemTextInfo{
   color:#111;
    flex-wrap: wrap;
+   font-weight: normal;
 }
 .btnGroup{
   text-align: center;
