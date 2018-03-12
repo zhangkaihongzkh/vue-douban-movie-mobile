@@ -7,22 +7,22 @@
 
     </router-view>
     <!-- 底部 -->
-    <mt-tabbar  fixed :default-active="activeIndex">
-      <mt-tab-item id="in_theaters" v-bind:class="['bottomBtn','active']">
+    <mt-tabbar  fixed >
+      <mt-tab-item id="in_theaters" v-bind:class="bottomBtn" >
         <img slot="icon" src="./assets/logo.png" >
         <router-link to="/in_theaters/1">
 
         正在热映
         </router-link>
       </mt-tab-item>
-      <mt-tab-item id="coming_soon"  v-bind:class="['bottomBtn']">
+      <mt-tab-item id="coming_soon"  v-bind:class="bottomBtn">
         <img slot="icon" src="./assets/logo.png">
         <router-link to="/coming_soon/1">
           <img slot="icon" src="./assets/logo.png">
           即将上映
           </router-link>
       </mt-tab-item>
-      <mt-tab-item id="top250"  v-bind:class="['bottomBtn']">
+      <mt-tab-item id="top250"  v-bind:class="bottomBtn">
         <img slot="icon" src="./assets/logo.png">
         <router-link to="/top250/1">
 
@@ -41,8 +41,15 @@ export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
-      activeIndex:'1'
     }
+  },
+  computed:{
+    bottomBtn(){
+      return{
+        bottomBtn:true,
+        'active':this.type == 'in_theaters'?true:false
+      }
+    },
   },
   components:{
     MovieList,
@@ -52,6 +59,19 @@ export default {
 
 <style>
 body,html{padding: 0;margin: 0;font-size:16px;}
+/*
+加载按钮样式
+ */
+.loading{
+  text-align: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2000;
+  background-color: rgba(0,0,0,0.4);
+}
 </style>
 
 <style scoped>

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <mt-spinner type="snake"></mt-spinner>
+
+
     <div v-bind:class="['listTitle']">{{title}}</div>
     <div v-bind:class="['contentList','clearfix']" v-for="item in subjects">
       <div v-bind:class="['itemLeft']">
@@ -20,9 +21,25 @@
 
 
     <div v-bind:class="['btnGroup']">
+      <p>共：{{totalNum}}条记录，当前第：{{currentPage}}页，共：{{totalPage}}页</p>
       <mt-button type="primary" size="small" v-bind:class="['is-plain']" @click.native="go(currentPage-1)"><</mt-button>
       <mt-button type="primary" size="small" v-bind:class="['is-plain']" @click.native="go(currentPage+1)">></mt-button>
     </div>
+
+    <!-- 加载样式loading -->
+    <div class="shadow" v-show="loading">
+      <div class="sk-cube-grid">
+          <div class="sk-cube sk-cube1"></div>
+          <div class="sk-cube sk-cube2"></div>
+          <div class="sk-cube sk-cube3"></div>
+          <div class="sk-cube sk-cube4"></div>
+          <div class="sk-cube sk-cube5"></div>
+          <div class="sk-cube sk-cube6"></div>
+          <div class="sk-cube sk-cube7"></div>
+          <div class="sk-cube sk-cube8"></div>
+          <div class="sk-cube sk-cube9"></div>
+      </div>
+  </div>
   </div>
 </template>
 
@@ -32,23 +49,30 @@ export default {
   name: 'MovieList',
   mounted(){
     this.fetchData();
+    //window.scrollTo(0,0);
+    // this.$router.beforeEach(function() {
+    //     window.scrollTo(0, 0)
+    // });
+    //页面置顶
+    this.menu();
   },
   //监听路由变化
   watch:{
     '$route': 'fetchData'
   },
+
   data () {
     return {
-      //获取到的数据
-
+      type:'',              //用于判断当前所处位置
+      loading:true, //用于判断是否获取到的数据
       subjects:{},  //列表总数
       totalNum:0,  //请求到的数据总数
       title:'Loading', //请求到的标题
       totalPage:0,  //总共的页数
       currentPage:0, //当前的页数
       count:9,      //默认请求的页数
-      page:this.$route.params.page,//当前的页面数
-
+      page:0,//当前的页面数
+      start:0
     }
   },
   methods:{
@@ -57,24 +81,32 @@ export default {
       //alert(1);
       var _this = this;
       var currentCategory = _this.$route.params.category;
+      var page = parseInt(this.$route.params.page);
+      var start = (page - 1) * this.count;
+      var count = this.count;
       this.$http.jsonp('https://api.douban.com/v2/movie/'+currentCategory,{
         params:{
-          start:_this.count*(_this.page-1),
-          count:_this.count,
+          start:start,
+          count:count,
           city:'广州',
         }
       }).then(function(res){
 
         //console.log( res.data);
+        _this.type = _this.$route.params.category; //修改当前所处的类型 in_threats  ..
+        //console.log(_this.type);
         _this.subjects = res.data.subjects;//获取到的列表数
         _this.title = res.data.title;     //标题
         _this.totalNum = res.data.total  //请求到的个数、
         _this.totalPage = Math.ceil(_this.totalNum/_this.count);
-        _this.page = _this.$route.params.page;
-        _this.currentPage = parseInt(_this.$route.params.page);
+         _this.page = parseInt(_this.$route.params.page);
+         _this.currentPage = _this.page;
+        console.log(_this.currentPage );
+        _this.loading = false;
         //console.log(_this.totalNum);
         //console.log(_this.totalPage);
-      })
+      });
+       _this.loading = true;
     },
     //页面跳转
     go(page){
@@ -88,9 +120,9 @@ export default {
 
       //_this.$router.replace({parmas:{page:page}});
       //_this.$router.push({path:'/'+currentCategory+'/{{page}}'});
-      _this.$router.push({params:{page:page}});
-      if(page >=1 && page <= this.pageTotal){
 
+      if(page >=1 && page <= this.totalPage){
+         _this.$router.push({params:{page:page}});
 
         // if(currentCategory == 'in_theaters'){
         //    _this.$router.push({name:'MovieList',params:{page:page}});
@@ -105,6 +137,10 @@ export default {
         //_this.$route
         // _this.$route.push({name:'Hot',params:{pageNum:page}});
       }
+    },
+    //页面跳转时置顶
+    menu() {
+      window.scrollTo(0,0);
     },
   },
 
@@ -184,6 +220,82 @@ export default {
 .btnGroup button{
   margin: 0 1rem;
 }
+
+
+/*按钮样式*/
+
+.sk-cube-grid {
+  width: 40px;
+  height: 40px;
+  margin: 100px auto;
+}
+
+.sk-cube-grid .sk-cube {
+  width: 33%;
+  height: 33%;
+  background-color: #10a0ea;
+  float: left;
+  -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+          animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+}
+.sk-cube-grid .sk-cube1 {
+  -webkit-animation-delay: 0.2s;
+          animation-delay: 0.2s; }
+.sk-cube-grid .sk-cube2 {
+  -webkit-animation-delay: 0.3s;
+          animation-delay: 0.3s; }
+.sk-cube-grid .sk-cube3 {
+  -webkit-animation-delay: 0.4s;
+          animation-delay: 0.4s; }
+.sk-cube-grid .sk-cube4 {
+  -webkit-animation-delay: 0.1s;
+          animation-delay: 0.1s; }
+.sk-cube-grid .sk-cube5 {
+  -webkit-animation-delay: 0.2s;
+          animation-delay: 0.2s; }
+.sk-cube-grid .sk-cube6 {
+  -webkit-animation-delay: 0.3s;
+          animation-delay: 0.3s; }
+.sk-cube-grid .sk-cube7 {
+  -webkit-animation-delay: 0s;
+          animation-delay: 0s; }
+.sk-cube-grid .sk-cube8 {
+  -webkit-animation-delay: 0.1s;
+          animation-delay: 0.1s; }
+.sk-cube-grid .sk-cube9 {
+  -webkit-animation-delay: 0.2s;
+          animation-delay: 0.2s; }
+
+@-webkit-keyframes sk-cubeGridScaleDelay {
+  0%, 70%, 100% {
+    -webkit-transform: scale3D(1, 1, 1);
+            transform: scale3D(1, 1, 1);
+  } 35% {
+    -webkit-transform: scale3D(0, 0, 1);
+            transform: scale3D(0, 0, 1);
+  }
+}
+
+@keyframes sk-cubeGridScaleDelay {
+  0%, 70%, 100% {
+    -webkit-transform: scale3D(1, 1, 1);
+            transform: scale3D(1, 1, 1);
+  } 35% {
+    -webkit-transform: scale3D(0, 0, 1);
+            transform: scale3D(0, 0, 1);
+  }
+}
+
+.shadow{
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2000;
+  background-color: rgba(0,0,0,0.4);
+}
+
 </style>
 
 
