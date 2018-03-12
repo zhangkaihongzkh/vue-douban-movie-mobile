@@ -1,11 +1,12 @@
 <template>
   <div v-bind:class="['listContent']">
-    <div v-bind:class="['searchArea']">
-        <!-- 搜索功能 -->
+   <!-- 搜索功能 -->
+    <!-- <div v-bind:class="['searchArea']">
+
          <form @submit.prevent="search" >
           <input type="text" name="" placeholder="Search..." v-bind:class="['searchInput']" v-model="searchInput">
         </form>
-    </div>
+    </div> -->
     <div v-bind:class="['listTitle']" >{{title}} </div>
     <div  v-bind:class="['contentList','clearfix']" v-for="item in subjects">
       <a :href="'#/detail/detail/'+item.id" v-bind:class="['linkBtn']">
